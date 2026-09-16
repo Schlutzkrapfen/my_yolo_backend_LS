@@ -81,4 +81,4 @@ class YOLOTopKBackend(LabelStudioMLBase):
             print("something went wrong not sure where")
             return None
 
-        return {"predictions": predictions }
+        return predictions
