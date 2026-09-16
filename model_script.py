@@ -8,7 +8,7 @@ import cv2
 LOCAL_FOLDER:Path = Path("/myfiles")
 def make_local_url(image_path):
     parts = image_path.split("/")
-    local_path =  LOCAL_FOLDER / parts[3:]
+    local_path =  LOCAL_FOLDER.joinpath(*parts[3:])
     return local_path
 
 
