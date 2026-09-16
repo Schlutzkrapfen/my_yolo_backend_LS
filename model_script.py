@@ -67,7 +67,7 @@ class YOLOTopKBackend(LabelStudioMLBase):
                         "y": y1 / img_h * 100,
                         "width": (x2 - x1) / img_w * 100,
                         "height": (y2 - y1) / img_h * 100,
-                        "rectanglelabels": ["cap"],
+                        "rectanglelabels": ["Asymmetry Caput"],
                     },
                     "score": conf,
                 })
