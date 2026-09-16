@@ -59,7 +59,7 @@ class YOLOTopKBackend(LabelStudioMLBase):
 
                 # Label Studio erwartet % statt normalisierter Werte
                 result_items.append({
-                    "from_name": "label",
+                    "from_name": "TMJ",
                     "to_name": "image",
                     "type": "rectanglelabels",
                     "value": {
