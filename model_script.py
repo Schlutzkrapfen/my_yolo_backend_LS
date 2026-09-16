@@ -10,7 +10,7 @@ LOCAL_FOLDER:Path = Path("~/myfiles")
 def make_local_url(image_path):
     parts = image_path.split("/")
     local_path =  LOCAL_FOLDER.joinpath(*parts[4:])
-    image_path = os.path.expanduser(image_path)
+    local_path = os.path.expanduser(local_path)
     return local_path
 
 
