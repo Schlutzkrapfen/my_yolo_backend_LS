@@ -77,6 +77,6 @@ class YOLOTopKBackend(LabelStudioMLBase):
                 "score": sum(item["score"] for item in result_items) / len(result_items) if result_items else 0,
             })
         if not predictions:
-            return []
+            return None
 
-        return predictions
+        return {"predictions": predictions }
