@@ -31,7 +31,8 @@ class YOLOTopKBackend(LabelStudioMLBase):
 
         for task in tasks:
             image_path = task["data"]["image"]  # Pfad/URL aus Label Studio
-            img = cv2.imread(make_local_url(image_path))
+            image_path = make_local_url(image_path)
+            img = cv2.imread(image_path)
             if img is None:
                 print(f"Failed to read image: {image_path}")
                 continue
