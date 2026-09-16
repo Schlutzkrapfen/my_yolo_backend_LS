@@ -1,5 +1,6 @@
 
 from pathlib import Path
+import uuid
 
 from label_studio_ml.model import LabelStudioMLBase
 from torch import os
@@ -59,6 +60,7 @@ class YOLOTopKBackend(LabelStudioMLBase):
 
                 # Label Studio erwartet % statt normalisierter Werte
                 result_items.append({
+                    "id": str(uuid.uuid4())[:8],
                     "from_name": "TMJ",
                     "to_name": "image",
                     "type": "rectanglelabels",
