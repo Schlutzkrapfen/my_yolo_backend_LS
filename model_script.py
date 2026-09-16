@@ -1,6 +1,17 @@
+
+from pathlib import Path
+
 from label_studio_ml.model import LabelStudioMLBase
 from ultralytics import YOLO
 import cv2
+
+LOCAL_FOLDER:Path = Path("/myfiles")
+def make_local_url(image_path):
+    parts = image_path.split("/")
+    local_path =  LOCAL_FOLDER / parts[3:]
+    return local_path
+
+
 
 class YOLOTopKBackend(LabelStudioMLBase):
     def __init__(self, **kwargs):
@@ -20,7 +31,7 @@ class YOLOTopKBackend(LabelStudioMLBase):
 
         for task in tasks:
             image_path = task["data"]["image"]  # Pfad/URL aus Label Studio
-            img = cv2.imread(image_path)
+            img = cv2.imread(make_local_url(image_path))
             if img is None:
                 print(f"Failed to read image: {image_path}")
                 continue
