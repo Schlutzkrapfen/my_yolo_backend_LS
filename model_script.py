@@ -33,51 +33,55 @@ class YOLOTopKBackend(LabelStudioMLBase):
         predictions = []
 
         for task in tasks:
-            image_path = task["data"]["image"]  # Pfad/URL aus Label Studio
-            image_path = make_local_url(image_path)
-            img = cv2.imread(image_path)
-            if img is None:
-                print(f"Failed to read image: {image_path}")
-                continue
+            try:
+                image_path = task["data"]["image"]  # Pfad/URL aus Label Studio
+                image_path = make_local_url(image_path)
+                img = cv2.imread(image_path)
+                if img is None:
+                    print(f"Failed to read image: {image_path}")
+                    continue
 
-            img_h, img_w = img.shape[:2]
+                img_h, img_w = img.shape[:2]
 
-            results = self.model.predict(source=image_path, conf=0.05, iou=0.5)
-            boxes = results[0].boxes
-            if not boxes:
-                print(f"No boxes found in image: {image_path}")
-                continue
+                results = self.model.predict(source=image_path, conf=0.05, iou=0.5)
+                boxes = results[0].boxes
+                if not boxes:
+                    print(f"No boxes found in image: {image_path}")
+                    continue
 
-            mask = boxes.cls == self.cap_class_id
-            cap_boxes = boxes[mask]
-            sorted_idx = (-cap_boxes.conf).argsort()
-            top_k_boxes = cap_boxes[sorted_idx][: self.K]
+                mask = boxes.cls == self.cap_class_id
+                cap_boxes = boxes[mask]
+                sorted_idx = (-cap_boxes.conf).argsort()
+                top_k_boxes = cap_boxes[sorted_idx][: self.K]
 
-            result_items = []
-            for box in top_k_boxes:
-                x1, y1, x2, y2 = box.xyxy[0].tolist()
-                conf = float(box.conf[0])
+                result_items = []
+                for box in top_k_boxes:
+                    x1, y1, x2, y2 = box.xyxy[0].tolist()
+                    conf = float(box.conf[0])
 
-                # Label Studio erwartet % statt normalisierter Werte
-                result_items.append({
-                    "id": str(uuid.uuid4())[:8],
-                    "from_name": "TMJ",
-                    "to_name": "image",
-                    "type": "rectanglelabels",
-                    "value": {
-                        "x": x1 / img_w * 100,
-                        "y": y1 / img_h * 100,
-                        "width": (x2 - x1) / img_w * 100,
-                        "height": (y2 - y1) / img_h * 100,
-                        "rectanglelabels": ["Asymmetry Caput"],
-                    },
-                    "score": conf,
+                    # Label Studio erwartet % statt normalisierter Werte
+                    result_items.append({
+                        "id": str(uuid.uuid4())[:8],
+                        "from_name": "TMJ",
+                        "to_name": "image",
+                        "type": "rectanglelabels",
+                        "value": {
+                            "x": x1 / img_w * 100,
+                            "y": y1 / img_h * 100,
+                            "width": (x2 - x1) / img_w * 100,
+                            "height": (y2 - y1) / img_h * 100,
+                            "rectanglelabels": ["Asymmetry Caput"],
+                        },
+                        "score": conf,
+                    })
+
+                predictions.append({
+                    "result": result_items,
+                    "score": sum(item["score"] for item in result_items) / len(result_items) if result_items else 0,
                 })
-
-            predictions.append({
-                "result": result_items,
-                "score": sum(item["score"] for item in result_items) / len(result_items) if result_items else 0,
-            })
+            except Exception as e:
+                
+                print(f"AHHHHHHHHHHHHHHHHHHHHH:{e}")
         if not predictions:
             print("something went wrong not sure where")
             return None
