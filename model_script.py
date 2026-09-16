@@ -2,6 +2,7 @@
 from pathlib import Path
 
 from label_studio_ml.model import LabelStudioMLBase
+from torch import os
 from ultralytics import YOLO
 import cv2
 
@@ -9,6 +10,7 @@ LOCAL_FOLDER:Path = Path("~/myfiles")
 def make_local_url(image_path):
     parts = image_path.split("/")
     local_path =  LOCAL_FOLDER.joinpath(*parts[4:])
+    image_path = os.path.expanduser(image_path)
     return local_path
 
 
